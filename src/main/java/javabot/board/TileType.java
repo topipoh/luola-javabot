@@ -1,4 +1,4 @@
-package javabot;
+package javabot.board;
 
 import java.util.stream.Stream;
 

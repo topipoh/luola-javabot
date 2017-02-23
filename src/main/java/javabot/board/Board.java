@@ -1,4 +1,4 @@
-package javabot;
+package javabot.board;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package javabot;
+package javabot.board;
 
 public class Location {
 	public final int x;

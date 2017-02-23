@@ -10,6 +10,11 @@ import java.util.Scanner;
 
 import org.junit.Test;
 
+import javabot.board.Board;
+import javabot.board.Location;
+import javabot.board.Tile;
+import javabot.board.TileType;
+
 public class BoardTest {
 	
 	private Random random = new Random();

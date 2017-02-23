@@ -1,4 +1,4 @@
-package javabot;
+package javabot.board;
 
 public class Tile {
 	public final Location location;
