@@ -1,7 +1,11 @@
 package javabot.board;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,12 +16,20 @@ public class Board {
 	public final int width;
 	
 	public final int height;
+	
+	private final List<Tile> tilesList;
+	
+	private final Map<TileType, List<Tile>> tilesByType;
 
 	private Board(Tile[][] tiles, int width, int height) {
 		this.tiles = tiles;
 		this.width = width;
 		this.height = height;
+		this.tilesList = tilesToList(tiles);
+		this.tilesByType = groupByType(tilesList);
 	}
+
+
 
 	public static Board of(String asciiBoard) {
 		final String[] lines = asciiBoard.split("\n");
@@ -103,9 +115,29 @@ public class Board {
 			.collect(Collectors.toList());
 	}
 
-	public Location myLocation() {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<Location> myLocation() {
+		return locationsByType(TileType.ME).stream()
+				.findAny();
+	}
+
+	public List<Location> locationsByType(TileType type) {
+		return tilesByType.get(type)
+				.stream()
+				.map(tile -> tile.location)
+				.collect(toList());
 	}
 	
+	private Map<TileType, List<Tile>> groupByType(List<Tile> tiles) {
+		return tiles.stream().collect(Collectors.groupingBy(tile -> tile.type));
+	}
+	
+	private List<Tile> tilesToList(Tile[][] tiles) {
+		List<Tile> list = new ArrayList<>(width * height);
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				list.add(tiles[x][y]);
+			}
+		}
+		return list;
+	}
 }

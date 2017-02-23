@@ -78,7 +78,7 @@ public class BoardTest {
 	@Test
 	public void testMyLocation() throws Exception {
 		Board board = Board.of(loadTextFile("/case1.txt"));
-		assertEquals(new Location(1, 1), board.myLocation());
+		assertEquals(new Location(1, 1), board.myLocation().get());
 	}
 
 }

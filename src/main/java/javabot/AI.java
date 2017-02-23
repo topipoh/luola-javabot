@@ -22,7 +22,7 @@ public class AI {
 	
 	private Direction anyValidDirection(Board board) {
 		// TODO: myLocation
-		board.neighborsAt(board.myLocation());
+		board.neighborsAt(board.myLocation().get());
 		return randomDirection();
 	}
 
