@@ -63,7 +63,7 @@ public class BoardTest {
 		Board board = Board.of(loadTextFile("/case2.txt"));
 		// ignore order
 		assertEquals(
-				setOf(new Tile(2, 1, TileType.FLOOR), new Tile(1, 2, TileType.FLOOR)), 
+				setOf(new Location(2, 1), new Location(1, 2)), 
 				setOf(board.neighborsAt(location(1, 1))));	
 	}
 	

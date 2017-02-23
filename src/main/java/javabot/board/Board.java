@@ -87,10 +87,8 @@ public class Board {
 		return "Board [width=" + width + ", height=" + height + "]";
 	}
 	
-
-	// This was 5 times faster than neighborsAt2
-	public List<Tile> neighborsAt(Location location) {
-		List<Tile> list = new ArrayList<>(4);	
+	public List<Location> neighborsAt(Location location) {
+		List<Location> list = new ArrayList<>(4);	
 		maybeAdd(location.north(), list);
 		maybeAdd(location.south(), list);
 		maybeAdd(location.west(), list);
@@ -98,21 +96,13 @@ public class Board {
 		return list;
 	}
 
-	private void maybeAdd(Location location, List<Tile> list) {
+	private void maybeAdd(Location location, List<Location> list) {
 		if(!outOfBounds(location)) {
 			Tile tile = tileAt(location);
 			if(tile.type.isWalkable()) {
-				list.add(tile);
+				list.add(tile.location);
 			}
 		}
-	}
-	
-	public List<Tile> neighborsAt2(Location target) {	
-		return Stream.of(target.north(), target.south(), target.east(), target.west())
-			.filter(location -> withinBounds(location))
-			.map(location -> tileAt(location))
-			.filter(tile -> tile.type.isWalkable())
-			.collect(Collectors.toList());
 	}
 
 	public Optional<Location> myLocation() {
@@ -140,4 +130,5 @@ public class Board {
 		}
 		return list;
 	}
+
 }

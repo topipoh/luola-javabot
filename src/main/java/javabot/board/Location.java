@@ -1,5 +1,7 @@
 package javabot.board;
 
+import javabot.api.Direction;
+
 public class Location {
 	public final int x;
 	public final int y;
@@ -53,5 +55,21 @@ public class Location {
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ")";
+	}
+
+	public Direction stepTowards(Location target) {
+		if(target.x > x) {
+			return Direction.east;
+		}
+		if(target.x < x) {
+			return Direction.west;
+		}
+		if(target.y < y) {
+			return Direction.north;
+		}
+		if(target.y > y) {
+			return Direction.south;
+		}
+		return null;
 	}
 }

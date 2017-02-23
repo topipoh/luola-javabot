@@ -13,6 +13,10 @@ public class Tile {
 		this.location = location;
 		this.type = type;
 	}
+	
+	public Location getLocation() {
+		return location;
+	}
 
 	@Override
 	public int hashCode() {

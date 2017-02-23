@@ -1,5 +1,6 @@
 package javabot;
 
+import java.util.Optional;
 import java.util.Random;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -7,6 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javabot.api.Action;
 import javabot.api.Direction;
 import javabot.board.Board;
+import javabot.board.Location;
 
 public class AI {
 	
@@ -21,9 +23,10 @@ public class AI {
 	}
 	
 	private Direction anyValidDirection(Board board) {
-		// TODO: myLocation
-		board.neighborsAt(board.myLocation().get());
-		return randomDirection();
+		final Location myLocation = board.myLocation().get();
+		Optional<Location> neighbor = board.neighborsAt(myLocation)
+				.stream().findAny();
+		return neighbor.isPresent() ? myLocation.stepTowards(neighbor.get()) : randomDirection();
 	}
 
 	private static Direction randomDirection() {
