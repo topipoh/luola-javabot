@@ -1,13 +1,8 @@
 package javabot;
 
-import java.util.Random;
-
-import javabot.api.Api;
-import javabot.api.Direction;
+import javabot.api.API;
 
 public class Bot {
-		
-	private Random random = new Random();
 
 	public static void main(String[] args) throws Exception {
 		Bot bot = new Bot();
@@ -16,15 +11,12 @@ public class Bot {
 
 	public void run() throws Exception {
 		System.out.println("Running bot!");
-		Api.addPlayer();
+		API.addPlayer();
 		while(true) {
-			Api.move(randomDirection());
-			System.out.println(Api.getBoard());
+			final String board = API.getBoard();
+			API.act(AI.takeAction(board));
+			System.out.println(board);
 			Thread.sleep(100);
 		}
-	}
-
-	private Direction randomDirection() {
-		return Direction.values()[random.nextInt(Direction.values().length)];
 	}
 }

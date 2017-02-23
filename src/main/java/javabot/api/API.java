@@ -2,7 +2,9 @@ package javabot.api;
 
 import static io.restassured.RestAssured.with;
 
-public class Api {
+import org.apache.commons.lang3.tuple.Pair;
+
+public class API {
 	
 	public static final String BASE_URL = "http://localhost:8080/api";
 	public static final String BOARD = BASE_URL + "/board";
@@ -24,13 +26,19 @@ public class Api {
 				.get(BOARD)
 				.asString();
 	}
+	
+	public static void act(Pair<Action, Direction> pair) {
+		act(pair.getLeft(), pair.getRight());
+	}
 
-	public static void move(Direction direction) {
+	public static void act(Action action, Direction direction) {
 		with()
 			.param("name", NAME)
 			.param("pass", PASS)
-			.param("action", "move")
+			.param("action", action)
 			.param("target", direction)
 		.get(ACT);
 	}
+
+
 }
