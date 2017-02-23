@@ -74,5 +74,11 @@ public class BoardTest {
 			board.neighborsAt(new Location(random.nextInt(board.width), random.nextInt(board.height)));
 		}
 	}
+	
+	@Test
+	public void testMyLocation() throws Exception {
+		Board board = Board.of(loadTextFile("/case1.txt"));
+		assertEquals(new Location(1, 1), board.myLocation());
+	}
 
 }

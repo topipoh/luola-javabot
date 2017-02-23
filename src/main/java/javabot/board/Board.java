@@ -102,5 +102,10 @@ public class Board {
 			.filter(tile -> tile.type.isWalkable())
 			.collect(Collectors.toList());
 	}
+
+	public Location myLocation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

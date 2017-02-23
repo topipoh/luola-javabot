@@ -14,7 +14,7 @@ public class Bot {
 		API.addPlayer();
 		while(true) {
 			final String board = API.getBoard();
-			API.act(AI.takeAction(board));
+			API.act(new AI(board).takeAction());
 			System.out.println(board);
 			Thread.sleep(100);
 		}
