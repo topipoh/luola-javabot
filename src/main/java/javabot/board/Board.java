@@ -1,5 +1,6 @@
 package javabot.board;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -111,6 +112,9 @@ public class Board {
 	}
 
 	public List<Location> locationsByType(TileType type) {
+		if(!tilesByType.containsKey(type)) {
+			return emptyList();
+		}
 		return tilesByType.get(type)
 				.stream()
 				.map(tile -> tile.location)

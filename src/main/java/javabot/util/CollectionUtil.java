@@ -22,9 +22,14 @@ public class CollectionUtil {
 	}
 	
 	public static <T> T getRandom(List<T> list) {
-		if(any(list)) {
-			return list.get(new Random().nextInt(list.size()));
-		}
-		return null;
+		return list.get(new Random().nextInt(list.size()));
+	}
+	
+	public static <T> T first(List<T> list) {
+		return list.get(0);
+	}
+	
+	public static <T> T last(List<T> list) {
+		return list.get(list.size() - 1);
 	}
 }
