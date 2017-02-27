@@ -9,7 +9,7 @@ public enum TileType {
 	ME(          '@', false), 
 	OTHER_PLAYER('P', false), 
 	TREASURE(    '!', true), 
-	MONSTER(     '$', false),
+	MONSTER(     'e', false),
 	UNKNOWN(     ' ', false)
 	;
 	
