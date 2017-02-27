@@ -17,4 +17,10 @@ public class AITest {
 		assertEquals(Pair.of(Action.move, Direction.east), new AI(board).takeAction());
 	}
 	
+	@Test
+	public void shouldGoToTreasure() throws Exception {
+		final String board = loadTextFile("/case3.txt");
+		assertEquals(Pair.of(Action.move, Direction.north), new AI(board).takeAction());
+	}
+	
 }
