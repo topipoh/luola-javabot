@@ -2,8 +2,10 @@ package javabot.board;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static javabot.pathfinding.Distance.distance;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +23,8 @@ public class Board {
 	private final List<Tile> tilesList;
 	
 	private final Map<TileType, List<Tile>> tilesByType;
+	
+	private final Map<Location, Integer> costMap;
 
 	private Board(Tile[][] tiles, int width, int height) {
 		this.tiles = tiles;
@@ -28,9 +32,8 @@ public class Board {
 		this.height = height;
 		this.tilesList = tilesToList(tiles);
 		this.tilesByType = groupByType(tilesList);
+		this.costMap = costs(tilesList);
 	}
-
-
 
 	public static Board of(String asciiBoard) {
 		final String[] lines = asciiBoard.split("\n");
@@ -58,10 +61,6 @@ public class Board {
 		return x < 0 || x > width - 1 || y < 0 || y > height - 1;
 	}
 	
-	public boolean withinBounds(Location l) {
-		return !outOfBounds(l);
-	}
-	
 	public Tile tileAt(Location location) {
 		int x = location.x;
 		int y = location.y;
@@ -71,12 +70,23 @@ public class Board {
 	private Tile tileAt(int x, int y) {
 		return tiles[x][y];
 	}
-	
+		
 	public String printBoard() {
 		StringBuilder s = new StringBuilder();
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				s.append(tileAt(x, y).type.getChar());
+			}
+			s.append("\n");
+		}
+		return s.toString();
+	}
+	
+	public String printCosts() {
+		StringBuilder s = new StringBuilder();
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				s.append(Math.min(cost(new Location(x, y)), 9));
 			}
 			s.append("\n");
 		}
@@ -133,6 +143,29 @@ public class Board {
 			}
 		}
 		return list;
+	}
+	
+	private Map<Location, Integer> costs(List<Tile> tiles) {
+		Map<Location, Integer> costs = new HashMap<>();
+		List<Location> monsters = locationsByType(TileType.MONSTER);
+		for (Tile tile : tiles) {
+			Integer cost = monsters.stream()
+				.mapToInt(m -> distance(tile.location, m))
+				.filter(d -> d < 4)
+				.map(d -> 4 - d)
+				.sum() + 1
+			;
+			costs.put(tile.location, cost);
+		}
+		return costs;
+	}
+
+	public Integer cost(Location current, Location next) {
+		return cost(next);
+	}
+	
+	public Integer cost(Location location) {
+		return costMap.get(location);
 	}
 
 }

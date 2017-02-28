@@ -1,8 +1,7 @@
 package javabot;
 
-import static java.util.Comparator.comparing;
-import static javabot.pathfinding.Distance.distance;
-import static javabot.util.CollectionUtil.any;
+import static javabot.pathfinding.Dijkstra.dijkstra;
+import static javabot.pathfinding.Dijkstra.reconstructPath;
 import static javabot.util.CollectionUtil.first;
 
 import java.util.List;
@@ -14,8 +13,7 @@ import javabot.api.Direction;
 import javabot.board.Board;
 import javabot.board.Location;
 import javabot.board.TileType;
-import javabot.pathfinding.BFS;
-import javabot.util.CollectionUtil;
+import javabot.pathfinding.Dijkstra.Result;
 
 public class AI {
 	
@@ -26,44 +24,45 @@ public class AI {
 	}
 	
 	public Pair<Action, Direction> takeAction() {
-		Direction direction = move(board);
+		Direction direction = moveToTreasure(board);
 		return direction != null ? 
 				Pair.of(Action.move, direction) :
 				Pair.of(Action.attack, Direction.east);
 	}
 
-	private Direction move(Board board) {
-		Direction direction = moveToTreasure(board);
-		if(direction == null) {
-			direction = anyValidDirection(board);
-		}
-		return direction;
-	}
-
 	private Direction moveToTreasure(Board board) {
-		Location treasure = closestTreasure(board);
-		return treasure != null ?
-				nextMove(board, board.myLocation().get(), treasure) : null;
-	}
-
-	private Location closestTreasure(Board board) {
-		return board.locationsByType(TileType.TREASURE).stream()
-				.sorted(comparing(treasure -> distance(board.myLocation().get(), treasure)))
-				.findFirst()
-				.orElse(null);
-	}
-
-	private Direction nextMove(Board board, Location start, Location goal) {
-		List<Location> path = BFS.findPath(board, start, goal);
-		return any(path) ?
-			start.stepTowards(first(path)) : null;
+		Result result = dijkstra(board, board.myLocation().get());
+		Direction direction = moveToTreasure(board, result);
+		return direction != null ? direction : moveAwayFromMonsters(board, result);
 	}
 	
-	private Direction anyValidDirection(Board board) {
-		final Location myLocation = board.myLocation().get();
-		List<Location> neighbors = board.neighborsAt(myLocation);
-		return !neighbors.isEmpty() ? 
-				myLocation.stepTowards(CollectionUtil.getRandom(neighbors)) : null;
+	private Direction moveToTreasure(Board board, Result result) {
+		Location goal = lowestCost(result, board.locationsByType(TileType.TREASURE));
+		return moveTo(board, result, goal);
 	}
 
+	private Direction moveAwayFromMonsters(Board board, Result result) {
+		Location goal = lowestCost(result, board.neighborsAt(board.myLocation().get()));
+		return moveTo(board, result, goal);
+	}
+
+	private Direction moveTo(Board board, Result result, Location goal) {
+		if(goal == null) {
+			return null;
+		}
+		List<Location> path = reconstructPath(result.cameFrom, board.myLocation().get(), goal);
+		return stepTowards(board, first(path));
+	}
+
+	private Location lowestCost(Result result, List<Location> locations) {
+		return locations.stream()
+			.filter(t -> result.costSoFar.containsKey(t)) // goal is reachable
+			.sorted((a, b) -> result.costSoFar.get(a) - result.costSoFar.get(b)) // sort by cost
+			.findFirst()
+			.orElse(null);
+	}
+
+	private Direction stepTowards(Board board, Location goal) {
+		return board.myLocation().get().stepTowards(goal);
+	}
 }
