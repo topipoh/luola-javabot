@@ -1,8 +1,8 @@
 package javabot;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -16,6 +16,7 @@ public class Bot {
 	
 	public static final String NAME = "SMULTR0N";
 	public static final String PASS = "SMULTR0N DESTROY!!1";
+	
 	private final String name;
 	private final String pass;
 	
@@ -26,13 +27,8 @@ public class Bot {
 	
 	public static void main(String[] args) throws Exception {
 		for(Pair<String, String> pair : getBots(args)) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					Bot bot = new Bot(pair.getLeft(), pair.getRight());
-					bot.run();
-				}
-			}).start();
+			Bot bot = new Bot(pair.getLeft(), pair.getRight());
+			new Thread(() -> bot.run()).start();
 		}
 	}
 	
@@ -40,22 +36,17 @@ public class Bot {
 		System.out.println("Running bot " + name);
 		API.addPlayer(name, pass);
 		while(true) {
-			final String board = API.getBoard(name);
-			Pair<Action, Direction> action = new AI(board).takeAction();
+			Pair<Action, Direction> action = new AI(API.getBoard(name)).takeAction();
 			System.out.println(name + ": " + action);
 			API.act(name, pass, action);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			sleep(100);
 		}
 	}
 
 	private static List<Pair<String, String>> getBots(String[] args) {
 		Integer bots = parseBotsCount(args);
 		if(bots == null) {
-			return Arrays.asList(Pair.of(NAME, PASS));
+			return asList(Pair.of(NAME, PASS));
 		} else {
 			return IntStream.rangeClosed(1, bots)
 					.mapToObj(i -> (Integer) i)
@@ -73,6 +64,14 @@ public class Bot {
 			}
 		}
 		return null;
+	}
+	
+	private static void sleep(int millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
