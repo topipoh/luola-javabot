@@ -10,7 +10,8 @@ public enum TileType {
 	OTHER_PLAYER('P', false), 
 	TREASURE(    '$', true), 
 	MONSTER(     'e', false),
-	UNKNOWN(     ' ', false)
+	UNKNOWN(     ' ', false),
+	SPAWN_POINT( ':', true)
 	;
 	
 	private final char c;
