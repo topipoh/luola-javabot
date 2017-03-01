@@ -1,15 +1,17 @@
 package javabot.api;
 
+import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.with;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 public class API {
 	
-	public static final String BASE_URL = "http://localhost:8080/api";
+	public static final String BASE_URL = "http://192.168.1.1:8080/api";
 	public static final String BOARD = BASE_URL + "/board";
 	public static final String ACT = BASE_URL + "/act";
 	public static final String ADD_PLAYER = BASE_URL + "/add-player";
+	public static final String TURN_DURATION = BASE_URL + "/turn-duration";
 	
 	public static void addPlayer(String name, String pass) {
 		with()
@@ -36,5 +38,9 @@ public class API {
 			.param("action", action)
 			.param("target", direction)
 		.get(ACT);
+	}
+
+	public static int turnDuration() {
+		return Integer.parseInt(get(TURN_DURATION).asString());
 	}
 }

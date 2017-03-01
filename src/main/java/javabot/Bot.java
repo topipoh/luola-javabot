@@ -35,11 +35,12 @@ public class Bot {
 	public void run() {
 		System.out.println("Running bot " + name);
 		API.addPlayer(name, pass);
+		final int turnDuration = API.turnDuration();
 		while(true) {
 			Pair<Action, Direction> action = new AI(API.getBoard(name)).takeAction();
 			System.out.println(name + ": " + action);
 			API.act(name, pass, action);
-			sleep(100);
+			sleep(turnDuration / 2);
 		}
 	}
 
